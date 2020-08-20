@@ -21,8 +21,8 @@ def process_1(
     # Stage 1 Get Processable SGCN Items
     process_items = sgcn.get_processable_items()
 
-    for item in process_items:
-        send_to_stage(item, 2)
+    #for item in process_items:
+    #    send_to_stage(item, 2)
 
     rawdata = validate_sgcn_input.validate_latest_run(False)
     pipeline_id = rawdata['pipeline_id']
@@ -32,7 +32,10 @@ def process_1(
 
     res = cache_manager.get_from_cache(pipeline_id)
     if not res:
+        print('publishing validation data to cache: {}'.format(json.dumps(data['totals'])))
         cache_manager.add_to_cache(pipeline_id, json.dumps(data))
+    else:
+        print('found validation results in cache: {}'.format(res))
 
 def process_2(
     path,

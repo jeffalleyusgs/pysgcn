@@ -116,7 +116,7 @@ def validate_latest_run(local=False):
 
     # CHANGE THIS PARAMETER to be the run id of a specific run you would like to
     # validate, otherwise, comment it out and let get_latest_sgcn_run_id() get the latest.
-    #pipeline_id = "705da83c-de64-11ea-a3a1-023f40fa784e"
+    pipeline_id = "705da83c-de64-11ea-a3a1-023f40fa784e"
 
     total_processed = get_total_records_processed_by_pipeline(pipeline_id)
 
