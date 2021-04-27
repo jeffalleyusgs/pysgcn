@@ -178,12 +178,12 @@ def process_3(
     validateSGCNRecord(sgcn_record)
 
     ecos_entry = get_single_ecos_entry(previous_stage_result["scientific name"])
-    sgcn_record["data"]["ecos"] = dict()
+    sgcn_record['data']['ecos'] = dict()
     if ecos_entry:
-        sgcn_record["data"]["ecos"]["url"] = ecos_entry["url"]
-        sgcn_record["data"]["ecos"]["ESA_listings"] = ecos_entry["ESA_listings"]
+        sgcn_record['data']['ecos']['url'] = ecos_entry['url']
+        sgcn_record['data']['ecos']['ESA_listings'] = ecos_entry['ESA_listings']
     else:
-        sgcn_record["data"]["ecos"] = "no ecos data"
+        sgcn_record['data']['ecos'] = "no ecos data"
 
     # send the final result to the database
     send_final_result(sgcn_record)
@@ -246,14 +246,18 @@ def get_single_ecos_entry(entry):
     # Search for a single entry by scientific name in ecos
     response = requests.get("https://ecos.fws.gov/ecp/pullreports/catalog/species/report/species/export?columns=/species@cn,sn,status,desc,listing_date&filter=/species@sn+=+%27" + entry + "%27&format=json&limit=100&sort=/species@cn+asc;/species@sn+asc")
     single_response = response.json()
+    if 'data' not in single_response.keys(): return None
     data = single_response['data']
     if len(data) == 0: return None
     cleaned_response = dict()
-    cleaned_response['commonname'] = data[0][0]
-    cleaned_response['scientificname'] = data[0][1]['value']
-    cleaned_response['url'] = data[0][1]['url']
+    cleaned_response['commonname'] = data[0][0] if data[0] else "unknown"
+    cleaned_response['scientificname'] = data[0][1]['value'] if data[0] and data[0][1] and 'value' in data[0][1].keys() else "unknown"
+    cleaned_response['url'] = data[0][1]['url'] if data[0] and data[0][1] and 'url' in data[0][1].keys() else "unknown"
     cleaned_response['ESA_listings'] = list()
     for entry in data:
-        record = {'status' : entry[2], 'location' : entry[3], 'date' : entry[4]}
+        status = entry[2] if entry[2] else "unknown"
+        location = entry[3] if entry[3] else "unknown"
+        date = entry[4] if entry[4] else "unknown"
+        record = {'status' : status, 'location' : location, 'date' : date}
         cleaned_response['ESA_listings'].append(record)
     return cleaned_response
