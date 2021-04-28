@@ -178,12 +178,12 @@ def process_3(
     validateSGCNRecord(sgcn_record)
 
     ecos_entry = get_single_ecos_entry(previous_stage_result["scientific name"])
-    sgcn_record['data']['ecos'] = dict()
     if ecos_entry:
+        sgcn_record['data']['ecos'] = dict()
         sgcn_record['data']['ecos']['url'] = ecos_entry['url']
         sgcn_record['data']['ecos']['ESA_listings'] = ecos_entry['ESA_listings']
     else:
-        sgcn_record['data']['ecos'] = "no ecos data"
+        pass
 
     # send the final result to the database
     send_final_result(sgcn_record)
