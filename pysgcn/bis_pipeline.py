@@ -244,8 +244,12 @@ def process_4(
 
 def get_single_ecos_entry(entry):
     # Search for a single entry by scientific name in ecos
-    response = requests.get("https://ecos.fws.gov/ecp/pullreports/catalog/species/report/species/export?columns=/species@cn,sn,status,desc,listing_date&filter=/species@sn+=+%27" + entry + "%27&format=json&limit=100&sort=/species@cn+asc;/species@sn+asc")
-    single_response = response.json()
+    single_response = None
+    try:
+        response = requests.get("https://ecos.fws.gov/ecp/pullreports/catalog/species/report/species/export?columns=/species@cn,sn,status,desc,listing_date&filter=/species@sn+=+%27" + entry + "%27&format=json&limit=100&sort=/species@cn+asc;/species@sn+asc")
+        single_response = response.json()
+    except:
+        return None
     if 'data' not in single_response.keys(): return None
     data = single_response['data']
     if len(data) == 0: return None
